@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/* @font-face {
+  font-family: "8bitoperator JVE";
+  src: url("/fonts/8bitoperator-JVE.woff2") format("woff2"), url("/fonts/8bitoperator-JVE.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+} */
+
+@theme {
+  --accent: oklch(0 0 0);
+  --bg: oklch(0 0 0);
+  --border: oklch(0 0 0);
+  /* --8bit: "8bitoperator JVE", serif; */
+}
+
+@layer components {
+}
+
+@layer base {
+  * {
+    @apply select-none touch-manipulation;
+  }
+
+  body {
+    @apply bg-black font-medium text-white;
+    @apply font-(family-name:--inter);
+  }
+
+  h1 {
+    @apply font-bold text-xl pointer-events-none;
+  }
+
+  img {
+    @apply pointer-events-none;
+  }
+
+  button {
+    @apply bg-white text-black px-3 py-1 pb-1.5 cursor-pointer rounded-lg;
+  }
+
+  input[type="text"] {
+    @apply bg-white text-black w-full border px-3 py-2 pb-2.5 rounded-lg;
+  }
+
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+  }
+
+  input[type="search"]::-moz-search-clear {
+    display: none;
+  }
+
+  input[type="search"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    background: var(--bg);
+    border-radius: 999px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -4.5px;
+  }
+
+  input[type="range"]::-moz-range-track {
+    height: 6px;
+    background: var(--bg);
+    border-radius: 999px;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  input[type="range"]::-moz-focus-outer {
+    border: 0;
+  }
+}
