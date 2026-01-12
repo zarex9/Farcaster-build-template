@@ -12,7 +12,7 @@ export const config = {
 const protectedRoutes = [""]
 
 export async function middleware(request: NextRequest) {
-  if (request.headers.get("x-middleware-subrequest")) return NextResponse.json({ error: "Forbidden header detected" }, { status: 403 })
+  if (request.headers.get("x-middleware-subrequest")) return NextResponse.json({ error: "Forbidden header detected" }, { status: 404 })
 
   const { pathname } = request.nextUrl
 
