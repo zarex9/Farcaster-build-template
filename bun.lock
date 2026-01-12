@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "mini-app-template",
+      "name": "mini-app-templat",
       "dependencies": {
         "@farcaster/auth-client": "^0.7.0",
         "@farcaster/miniapp-node": "^0.1.11",
