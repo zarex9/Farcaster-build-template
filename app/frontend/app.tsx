@@ -1,37 +1,53 @@
+import { useEffect } from "react"
+import { BrowserRouter, Route, Routes } from "react-router"
+import sdk from "@farcaster/miniapp-sdk"
+
 import clientErrorHandling from "@/lib/clientErrorsReporting"
 import Providers from "@/lib/providers"
 import { store, updateStore } from "@/lib/store"
-import sdk from "@farcaster/miniapp-sdk"
-import { useEffect } from "react"
-import { BrowserRouter, Route, Routes } from "react-router"
+
 import Header from "./components/Header"
 import Menu from "./components/Menu"
-import Claim from "./pages/Claim"
 import Home from "./pages/Home"
 import Promote from "./pages/Promote"
+import Claim from "./pages/Claim"
 
 export default function App() {
   const { user, client } = store()
 
   useEffect(() => {
     clientErrorHandling()
-    ;(async function () {
+
+    const init = async () => {
       try {
-        const { user, client } = await sdk.context
+        // Context is synchronous
+        const { user, client } = sdk.context
         const capabilities = await sdk.getCapabilities()
+
         updateStore({ user, client, capabilities })
+      } catch (err) {
+        if (process.env.NODE_ENV === "development") {
+          console.error("Miniapp init failed:", err)
+        }
+      }
 
-        // const preloadImage = new Image()
-        // preloadImage.src = "/images/global/bg.svg"
-        // preloadImage.onload = async () => await sdk.actions.ready({ disableNativeGestures: true }).catch(() => { })
-        // preloadImage.onerror = async () => await sdk.actions.ready({ disableNativeGestures: true }).catch(() => { })
-      } catch (error) {}
+      // Always mark app as ready
+      await sdk.actions
+        .ready({ disableNativeGestures: true })
+        .catch(() => {})
 
-      await sdk.actions.ready({ disableNativeGestures: true }).catch(() => {})
+      // QuickAuth (optional but recommended)
+      try {
+        const { token: session } = await sdk.quickAuth.getToken()
+        updateStore({ session })
+      } catch (err) {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("QuickAuth failed:", err)
+        }
+      }
+    }
 
-      const { token: session } = await sdk.quickAuth.getToken()
-      updateStore({ session })
-    })()
+    init()
   }, [])
 
   return (
@@ -39,23 +55,21 @@ export default function App() {
       <Providers>
         <BrowserRouter>
           <Header />
+
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/promote" element={<Promote />} />
             <Route path="/claim" element={<Claim />} />
           </Routes>
+
           <Menu />
         </BrowserRouter>
-        {/* <img
-          src="/images/global/bg.svg"
-          alt="bg"
-          className={clsx("fixed top-0 left-0 w-screen h-screen object-fill -z-10")}
-        /> */}
       </Providers>
 
+      {/* Dev-only debug overlay */}
       {/* {process.env.NODE_ENV === "development" && (
-        <pre className="fixed bottom-0 inset-x-0 p-5 pb-15 rounded-t-4xl text-xs text-wrap bg-amber-200/50 pointer-events-none">
-          <div>{JSON.stringify({ user, client, ua: navigator.userAgent }, null, 2)}</div>
+        <pre className="fixed bottom-0 inset-x-0 p-4 text-xs bg-amber-200/50 pointer-events-none">
+          {JSON.stringify({ user, client }, null, 2)}
         </pre>
       )} */}
     </div>
